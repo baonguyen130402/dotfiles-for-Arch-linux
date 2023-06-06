@@ -1,0 +1,51 @@
+local glyphs = {}
+
+local installed, circles = pcall(require, 'circles')
+if installed then
+    circles.setup({ icons = { empty = '', filled = '', lsp_prefix = '' } })
+    glyphs = circles.get_nvimtree_glyphs()
+end
+
+glyphs.git = {
+    unstaged = '',
+    staged = '',
+    unmerged = '',
+    renamed = '',
+    untracked = '',
+    deleted = '',
+    ignored = '',
+}
+
+require('nvim-tree').setup({
+    diagnostics = { enable = true },
+    view = {
+        width = 40,
+        side = 'left',
+        signcolumn = 'no',
+    },
+    git = {
+        enable = true,
+        ignore = false,
+        timeout = 500,
+    },
+    actions = {
+        open_file = {
+            quit_on_open = true,
+        },
+    },
+    renderer = {
+        group_empty = true,
+        highlight_opened_files = 'all',
+        special_files = {},
+        root_folder_modifier = ':p:~',
+        icons = {
+            glyphs = glyphs,
+        },
+        indent_markers = {
+            enable = true,
+        }
+    },
+})
+
+-- Mappings
+vim.keymap.set('n', '<C-b>', vim.cmd.NvimTreeToggle, { silent = true })
